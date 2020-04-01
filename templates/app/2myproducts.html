@@ -1,0 +1,34 @@
+<!--继承模板-->
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block head%}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amado - Furniture Ecommerce Template | Login</title>
+    
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+    {% endblock head%}
+</head>
+<body>
+	{% block main%}
+		{% if user.is_authenticated %}
+			{% for p in plist %}
+			<li>
+				<p> name:{{p.pName}}</p> <br>
+
+				<p> owner:{{p.pOwner}}</p><br>
+				<p> price:{{p.pPrice}}</p><br>
+				<p> inventories:{{p.pInventory}}</p><br>
+			</li>
+		
+			{% endfor %}
+		{% else %}
+			<p>{{notice}}</p>
+		{% endif %}
+
+  	{% endblock main%}
+
+</body>

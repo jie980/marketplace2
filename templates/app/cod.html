@@ -1,0 +1,37 @@
+<!--继承模板-->
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block head%}
+    <!-- Title  -->
+    <title>COD</title>
+    {% endblock head%}
+
+
+</head>
+
+<body>
+
+
+    {% block main%}
+        <!-- Header Area End -->
+    <div class="amado_product_area section-padding-100">
+        <div class="container-fluid mt-30">
+           
+            <h2>Order placed! Your order number is {{order.pk}}. </h2>
+            <h2>Pay by cash when delivery</h2>
+            <a href='{% url "orderhistory" %}'>click here to see</a>
+            
+        </div>
+    </div>
+        {% endblock main%}
+            
+
+
+
+
+
+</html>

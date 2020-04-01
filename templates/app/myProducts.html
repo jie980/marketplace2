@@ -1,0 +1,125 @@
+<!--继承模板-->
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {%block head%}
+    <title>My Account</title>
+    <link rel="stylesheet" href="{% static 'css/myStyle.css' %}">
+    <script src="{% static 'js/jie.js' %}"></script>
+
+    {%endblock head%}
+</head>
+
+<body>
+
+    <!--侧边栏-->
+    {% block main%}
+    <div class="shop_sidebar_area">
+        <div class="sidebar_text">
+
+        <!-- ##### Single Widget ##### -->
+        <div class="widget catagory mb-50">
+            <!-- Widget Title -->
+            <h6 class="widget-title mb-30">My Account</h6>
+
+            <!--  Catagories  -->
+            <div class="catagories-menu">
+                <ul>
+                    <li><a href="{% url 'orderhistory' %}">Order History</a></li>
+                    <li><a href="{% url 'myproducts' %}">My Product</a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ##### Single Widget ##### -->
+        
+        
+    </div>
+    </div>
+
+    <div class="amado_product_area section-padding-100">
+        <div class="container-fluid mt-30">
+            
+            <!-- 检测到登陆之后显示welcome -->
+            <!-- 不然显示登陆界面链接 -->
+            {% if user.is_authenticated %}
+            <div class="cart-title">
+                <h2>My Product <a href="{% url 'sell' %}"> <span class="sell">SELL PRODUCT</span></a></h2>
+               
+            </div>
+    
+                <div class="cart-table clearfix">               
+                    <section> 
+                        {% for p,p2 in plist %}
+                        <article class="product">
+                            <header>
+                                {% if p2 == '' %}
+
+                                <a class="remove" href="/app/myaccount/myproducts/edit/{{p.pk}}">
+                                    <img src= "{% static 'img/product-preview.png' %}" alt="">
+                                <h3>Edit</h3>
+                                </a>
+
+                                {% else %}
+                                <a class="remove" href="/app/myaccount/myproducts/edit/{{p.pk}}">
+                                    <img src= "/static/upfile/{{p2}}" alt="">
+                                    <h3>Edit</h3>
+                                </a>
+
+  
+                                {% endif %}
+
+                            </header>
+                     
+                            <div class="content">
+                                <h1>{{p.pName}}</h1>
+                                <h1 class='pid'>id:{{p.pk}}</h1>
+                                <p>Price:<span>${{p.pPrice}}</span></p>
+                                
+                            </div>
+            
+                            <footer class="content" >
+                                
+                                <span class="qt"> Inventory:{{p.pInventory}}</span>
+    
+                               
+            
+                                <h2 class="full-price">
+                                    <a href="/app/myaccount/myproducts/deleted/{{p.pk}}">Delete</a>
+                      
+                                </h2>
+                            </footer>
+                        </article>
+                        {% endfor %}
+                    </section>
+                </div>
+
+<!--                     <form action='/app/edit/' method='POST' enctype="multipart/form-data">
+                        {% csrf_token %}
+                        name:<input type='text' name='pName' value='{{p.pName}}'><br>
+                        description:<br>
+                        <textarea name="pDescription" rows="20" cols="80">{{p.pDescription}}</textarea><br>
+                        picture:<input type='file' name='aPicture' value='{{p.pPicture}}'><br>
+                        price:<input type='text' name='pPrice' value='{{p.pPrice}}'><br>
+                        inventory:<input type='inventory' name='pInventory' value= '{{p.pInventory}}'><br>
+                        <input type='submit' value='Edit'><br>
+                    </form> -->
+
+            {% else %}
+            <div class="cart-title">
+                <h2>Please <a href="{% url 'login' %}">login</a> or <a href="{% url 'register' %}">sign up</a>.</h2>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock main%}
+
+</body>
+
+</html>

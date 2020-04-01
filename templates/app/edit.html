@@ -1,0 +1,95 @@
+<!--继承模板-->
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Title  -->
+    {%block head%}
+    <title>My Account</title>
+    {%endblock head%}
+
+</head>
+
+<body>
+
+
+    <!--侧边栏-->
+    {%block main%}
+    <div class="shop_sidebar_area">
+        <div class="sidebar_text">
+
+        <!-- ##### Single Widget ##### -->
+        <div class="widget catagory mb-50">
+            <!-- Widget Title -->
+            <h6 class="widget-title mb-30">My Account</h6>
+
+            <!--  Catagories  -->
+            <div class="catagories-menu">
+                <ul>
+                    <li><a href="{% url 'orderhistory'%}">Order History</a></li>
+                    <li><a href="{% url 'myproducts'%}">My Product</a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ##### Single Widget ##### -->
+        
+        
+    </div>
+    </div>
+
+    <div class="amado_product_area section-padding-100">
+        <div class="container-fluid mt-30">
+            
+            <!-- 检测到登陆之后显示welcome -->
+            <!-- 不然显示登陆界面链接 -->
+            <div class="cart-title">
+               <h2 >Edit Your Product</h2>
+            </div>
+            <div class="checkout_details_area mt-30 clearfix">
+                <form action="{% url 'edited'%}" method='POST' enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+
+                        <input value='{{product.pName}}' type='text' name='pName'class="form-control" placeholder="Product Name">
+                        <span>{{ form.pName.errors }}</span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <input value='{{product.pPrice}}' type='text' name='pPrice'class="form-control"  placeholder="Product Price">
+                        <span>{{ form.pPrice.errors }}</span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input value='{{product.pInventory}}' type='text' name='pInventory'class="form-control" placeholder="Product Quantity">
+                        <span>{{ form.pInventory.errors }}</span>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <input value='{{product.pPicture}}' type='file' name='pPicture'class="form-control">
+                        <span>{{ form.pPicture.errors }}</span>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <textarea name="pDescription" class="form-control w-100" cols="30" rows="10" placeholder="Leave a description about your product">{{product.pDescription}}</textarea>
+                        <span>{{ form.pDescription.errors }}</span>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <input type='submit' value='submit' class="btn amado-btn w-100">
+                    </div> 
+
+                </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    {%endblock main%}
+
+</body>
+
+</html>

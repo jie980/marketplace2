@@ -1,0 +1,22 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <meta charset="UTF-8">
+
+</head>
+<body>
+    <form action='/app/registered/' method='POST'>
+      {% csrf_token %}
+
+      username: <input type='text' name='username' value=''><br>
+      {{ form.username.errors }}
+      email: <input type='text' name='email' value='' ><br>
+      {{ form.email.errors }}
+      password:<input type="password" name="password"><br>
+      {{ form.password.errors }}
+      repeat password:<input type="password" name="password_repeat"><br>
+      {{ form.password_repeat.errors }}
+      <input type='submit' value='create'>
+    </form>
+</body>
+</html>

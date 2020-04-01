@@ -1,0 +1,18 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <meta charset="UTF-8">
+
+</head>
+<body>
+    <form action='/app/logined/' method='POST'>
+      {% csrf_token %}
+
+      {{notice}}
+      <br>username: <input type='text' name='username' value=''><br>
+      password:<input type="password" name="password"><br>
+      {{login_error}}
+      <br><input type='submit' value='log in'>
+    </form>
+</body>
+</html>

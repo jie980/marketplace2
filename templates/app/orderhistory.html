@@ -1,0 +1,128 @@
+<!--继承模板-->
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block head%}
+    <title>My Account</title>
+    <link rel="stylesheet" href="{% static 'css/myStyle.css' %}">
+    {% endblock head%}
+
+
+    
+   105行开始是内容
+</head>
+
+<body>
+
+
+        
+    <!--侧边栏-->
+        {% block main %}
+        <div class="shop_sidebar_area">
+            <div class="sidebar_text">
+
+            <!-- ##### Single Widget ##### -->
+            <div class="widget catagory mb-50">
+                <!-- Widget Title -->
+                <h6 class="widget-title mb-30">My Account</h6>
+
+                <!--  Catagories  -->
+                <div class="catagories-menu">
+                    <ul>
+                        <li><a href="{% url 'orderhistory' %}">Order History</a ></li>
+                        <li><a href="{% url 'myproducts' %}">My Product</a ></li>
+                        <li><a href="#"></a ></li>
+                        <li><a href="#"></a ></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ##### Single Widget ##### -->
+            
+            
+            </div>
+        </div>
+
+        <div class="amado_product_area section-padding-100">
+            {% if user.is_authenticated %}
+            <div class="container-fluid mt-30">
+                
+                <!-- 检测到登陆之后显示welcome -->
+                <!-- 不然显示登陆界面链接 -->
+                 <div class="cart-title">
+                   
+                    <h2>Order History</h2>
+                </div>
+                <div class="cart-table clearfix">      
+                    {% for order,itemlist in orderlist %}   
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Order Number:{{order.pk}}</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                               
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in itemlist %}
+                            <tr>
+                                <td class="orderimg">
+                                    <a href="#"></a>
+                                </td>
+                                <td class="cart_product_desc">
+                                    <h5>{{item.product.pName}}</h5>
+                                </td>
+                                <td class="price">
+                                    <span style="color:#fbb710">${{item.price}}</span>
+                                </td>
+                                <td class="qty">
+                                    <div class="qty-btn d-flex">
+                                        <p style="color:#fbb710">Qty:<span>{{item.quantity}}</span></p>
+                                       
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                           
+
+                        </tbody>
+                        <tr>
+                            <th style="color:#fbb710">Total:{{order.price}}</th>
+                        </tr>
+                    </table>
+                    {% endfor %}
+                    <section>
+                        
+                    </section>
+                  </div>
+            </div>
+
+            {% else %}
+            <div class="container-fluid mt-30">
+                
+                <!-- 检测到登陆之后显示welcome -->
+                <!-- 不然显示登陆界面链接 -->
+                <div class="cart-title">
+                   
+                    <h2>Order History</h2>
+                </div>
+
+                <div class="cart-title">
+                    <h2>Please <a href="login.html">login</a> or <a href="signup.html">sign up</a>.</h2>
+                </div>
+                
+
+            </div>
+            {% endif %}
+        </div>
+        {% endblock main%}
+
+
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+<!--继承模板-->
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Title  -->
+    {%block head%}
+    <title>My Account</title>
+    {%endblock head%}
+</head>
+
+<body>
+
+
+    {%block main%}
+    <!--侧边栏-->
+    {% if user.is_authenticated %}
+    <div class="shop_sidebar_area">
+        <div class="sidebar_text">
+
+        <!-- ##### Single Widget ##### -->
+        
+        <div class="widget catagory mb-50">
+            <!-- Widget Title -->
+            <h6 class="widget-title mb-30">My Account</h6>
+ 
+            <!--  Catagories  -->
+            <div class="catagories-menu">
+                <ul>
+                    <li><a href="{% url 'orderhistory' %}">Order History</a></li>
+                    <li><a href="{% url 'myproducts' %}">My Product</a></li>
+                    <li><a href="#"></a></li>
+                    <li><a href="#"></a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- ##### Single Widget ##### -->
+        
+        
+        </div>
+    </div>
+    {% else %}
+<!--侧边栏-->
+        <div class="shop_sidebar_area">
+            <div class="sidebar_text">
+
+            <!-- ##### Single Widget ##### -->
+            <div class="widget catagory mb-50">
+                <!-- Widget Title -->
+                <h6 class="widget-title mb-30">My Account</h6>
+
+                <!--  Catagories  -->
+                <div class="catagories-menu">
+                    <ul>
+                        <li><a href="#">Order History</a ></li>
+                        <li><a href="#">My Product</a ></li>
+                        <li><a href="#"></a ></li>
+                        <li><a href="#"></a ></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ##### Single Widget ##### -->
+            
+            
+        </div>
+        </div>
+
+        <div class="amado_product_area section-padding-100">
+            <div class="container-fluid mt-30">
+                
+                <!-- 检测到登陆之后显示welcome -->
+                <!-- 不然显示登陆界面链接 -->
+                <div class="cart-title">
+                   <h2>Welcome</h2>
+                </div>
+                <div class="cart-title">
+                    <h2>Please <a href="{% url 'login' %}">login</a > or <a href="{% url 'register' %}">sign up</a >.</h2>
+                   
+                </div>
+                
+
+            </div>
+        </div>
+    </div>
+    {% endif%}
+    {%endblock main%}
+
+</body>
+
+</html>

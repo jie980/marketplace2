@@ -1,0 +1,84 @@
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    {% block head%}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amado - Furniture Ecommerce Template | Signup</title>
+
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+
+    {% endblock head%}
+
+<body>
+
+    {% block main%}
+    <div class="cart-table-area section-padding-100">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 col-lg-8">
+                    <div class="checkout_details_area mt-50 clearfix">
+
+                        <div class="cart-title">
+                            <h2>Sign Up</h2>
+                        </div>
+
+                        <div id="cd-signup"> <!-- sign up form -->
+                            <form class="cd-form" action='/app/registered/' method='POST'>
+                                {% csrf_token %}
+                                <p class="fieldset">
+                                    <label class="image-replace cd-username" for="signup-username">Username</label>
+                                    <input class="full-width has-padding has-border" id="signup-username" type="text" placeholder="Username"
+                                    name='username'>
+                                    <span class="cd-error-message">
+                                    {{ form.username.errors }}</span>
+                                </p>
+                    
+                                <p class="fieldset">
+                                    <label class="image-replace cd-email" for="signup-email">E-mail</label>
+                                    <input class="full-width has-padding has-border" id="signup-email" type="email" placeholder="E-mail"
+                                    name='email'>
+                                    <span class="cd-error-message">{{ form.email.errors }}</span>
+                                </p>
+                    
+                                <p class="fieldset">
+                                    <label class="image-replace cd-password" for="signup-password">Password</label>
+                                    <input class="full-width has-padding has-border" id="signup-password" type="password"  placeholder="Password"
+                                    name="password">
+                                    <a href="#0" class="hide-password">Show</a>
+                                    <span class="cd-error-message">
+                                    {{ form.password.errors }}</span>
+                                </p>
+
+                                <p class="fieldset">
+                                    <label class="image-replace cd-password" for="signup-password">Password Again</label>
+                                    <input class="full-width has-padding has-border" id="signup-password" type="password"  placeholder="Password Again"
+                                    name="password_repeat">
+                                    <a href="#0" class="hide-password">Show</a>
+                                    <span class="cd-error-message">
+                                    {{ form.password_repeat.errors }}</span>
+                                </p>
+
+
+                    
+                                <p class="fieldset">
+                                    <input class="full-width has-padding" type="submit" value="Create account">
+                                </p>
+                            </form>
+                    
+                            <!-- <a href="#0" class="cd-close-form">Close</a> -->
+                        </div> <!-- cd-signup -->              
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock main%}
+                    
+
+
+    
+</body>
+</html>

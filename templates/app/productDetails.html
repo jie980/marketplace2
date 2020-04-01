@@ -1,0 +1,161 @@
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Title  -->
+    {% block head%}
+    <title>Amado - Furniture Ecommerce Template | Product Details</title>
+    {% endblock head%}
+
+</head>
+
+<body>
+    {% block main %}
+    <!-- Search Wrapper Area Start -->
+
+
+        <!-- Product Details Area Start -->
+        <div class="single-product-area section-padding-100 clearfix">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-12">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mt-50">
+                                <li class="breadcrumb-item"><a href="{% url 'shop' %}">Shop</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">{{product.pName}}</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-lg-7">
+                        <div class="single_product_thumb">
+                            <div id="product_details_slider" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    {% if pPath != ''%}
+                                    <div class="carousel-item active">
+                                        <a class="gallery_img" href="/static/upfile/{{pPath}}">
+                                            <img class="d-block w-100" src="/static/upfile/{{pPath}}" alt="First slide">
+                                        </a>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <a class="gallery_img" href="/static/upfile/{{pPath}}">
+                                            <img class="d-block w-100" src="/static/upfile/{{pPath}}" alt="Second slide">
+                                        </a>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <a class="gallery_img" href="/static/upfile/{{pPath}}">
+                                            <img class="d-block w-100" src="/static/upfile/{{pPath}}" alt="Third slide">
+                                        </a>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <a class="gallery_img" href="/static/upfile/{{pPath}}">
+                                            <img class="d-block w-100" src="/static/upfile/{{pPath}}" alt="Fourth slide">
+                                        </a>
+                                    </div>
+                                    {% else %}
+                                    <div class="carousel-item active">
+                                        <a class="gallery_img" href="{% static 'img/product-preview.png' %}">
+                                            <img class="d-block w-100" src="{% static 'img/product-preview.png' %}" alt="First slide">
+                                        </a>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <a class="gallery_img" href="{% static 'img/product-preview.png' %}">
+                                            <img class="d-block w-100" src="{% static 'img/product-preview.png' %}" alt="Second slide">
+                                        </a>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <a class="gallery_img" href="{% static 'img/product-preview.png' %}">
+                                            <img class="d-block w-100" src="{% static 'img/product-preview.png' %}" alt="Third slide">
+                                        </a>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <a class="gallery_img" href="{% static 'img/product-preview.png' %}">
+                                            <img class="d-block w-100" src="{% static 'img/product-preview.png' %}" alt="Fourth slide">
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-5">
+                        <div class="single_product_desc">
+                            <!-- Product Meta Data -->
+                            <div class="product-meta-data">
+                                <div class="line"></div>
+                                <p class="product-price">${{product.pPrice}}</p>
+                                <a href="product-details.html">
+                                    <h6>{{product.pName}}</h6>
+                                </a>
+                                <!-- Ratings & Review -->
+                                <div class="ratings-review mb-15 d-flex align-items-center justify-content-between">
+                                    <div class="ratings">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="review">
+                                        <a href="#">Write A Review</a>
+                                    </div>
+                                </div>
+                                <!-- Avaiable -->
+                                <p class="avaibility"><i class="fa fa-circle"></i> {{product.pInventory}} left in stock.</p>
+                            </div>
+
+                            <div class="short_overview my-5">
+                                <p>{{product.pDescription}}</p>
+                            </div>
+
+                            <!-- Add to Cart Form -->
+
+                            <form class="cart clearfix" method="post" action='{% url "cart" %}'>
+                                {% csrf_token %}
+                                <div class="cart-btn d-flex mb-50">
+                                    <p>ProductId</p>
+                                    <input type='text' readonly value="{{product.pk}}" name='pid'>
+                                </div>
+                                <div class="cart-btn d-flex mb-50">
+                                    <p>Qty</p>
+                                    <div class="quantity">
+
+                                        <input type="number" class="qty-text" id="qty" step="1" min="1" max="{{product.pInventory}}" name="quantity" value="1">
+          
+                                    </div>
+                                </div>
+                                {% if user.is_authenticated %}
+                                <input type="submit" name="addtocart" value="Add to cart & check out" class="btn amado-btn">
+
+
+                                {% else %}
+                                <a href = '{% url "login" %}' class="btn amado-btn">Login To Buy</a>
+                                {% endif %}
+                            </form>
+                            <form action='{% url "room" %}'>
+                                    <input type="submit" name="chat" value="Chat with seller" class="btn amado-btn">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- Product Details Area End -->
+    <!-- ##### Main Content Wrapper End ##### -->
+
+    <!-- ##### Footer Area End ##### -->
+    {% endblock main %}
+
+</body>
+
+</html>

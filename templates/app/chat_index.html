@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600,200' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href='static/normalize.css' >
+    <link rel="stylesheet" href='static/skeleton.css' >
+    <link rel="stylesheet" href='static/chat.css' >
+    <title>Chat Rooms</title>
+</head>
+
+<body>
+    <p>
+    <a href="{% url 'index' %}">Home</a>
+    <a href="{% url 'signup' %}">Signup</a>
+    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'logout' %}">Logout</a>
+    </p>
+
+    What chat room would you like to enter?<br/>
+    <input id="room-name-input" type="text" size="100"/><br/>
+    <input id="room-name-submit" type="button" value="Enter"/>
+
+    <script>
+        document.getElementById('room-name-input').focus();
+        document.getElementById('room-name-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.getElementById('room-name-submit').click();
+            }
+        };
+
+        document.getElementById('room-name-submit').onclick = function(e) {
+            var roomName = document.getElementById('room-name-input').value;
+            window.location.pathname = '/chat/' + roomName + '/';
+        };
+    </script>
+</body>
+</html>

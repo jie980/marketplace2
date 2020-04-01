@@ -1,0 +1,30 @@
+<!--继承模板-->
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+
+<!DOCTYPE html> 
+<html>
+<head>
+    <meta charset="UTF-8">
+
+</head>
+<body>
+    {% block main%}
+    <form action='/app/posted/' method='POST' enctype="multipart/form-data">
+        {% csrf_token %}
+        name:<input type='text' name='pName'><br>
+        {{ form.pName.errors }}
+         description:<br>
+        <textarea name="pDescription" rows="20" cols="80"></textarea><br>
+        {{ form.pDescription.errors }}
+        picture:<input type='file' name='aPicture'><br>
+        {{ form.pPicture.errors }}
+        price:<input type='text' name='pPrice'><br>
+        {{ form.pPrice.errors }}
+        inventory:<input type='inventory' name='pInventory'><br>
+        {{ form.pInventory.errors }}
+        <input type='submit' value='submit'><br>
+    </form>
+    {% endblock main%}
+</body>
+</html>

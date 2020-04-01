@@ -1,0 +1,75 @@
+<!--继承模板-->
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    {% block head%}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amado - Furniture Ecommerce Template | Login</title>
+    
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+
+
+
+    {% endblock head%}
+
+
+<body>
+    {% block main%}
+
+    <div class="cart-table-area section-padding-100">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 col-lg-8">
+                    <div class="checkout_details_area mt-50 clearfix">
+
+                        <div class="cart-title">
+                            <h2>Login</h2>
+                        </div>
+
+                        <div id="cd-login"> <!-- log in form -->
+                            <form class="cd-form" action='/app/logined/' method='POST'>
+                                {% csrf_token %}
+                                <span>{{notice}}</span>
+                                <p class="fieldset">
+                                    <label class="image-replace cd-username" for="signup-username">Username</label>
+                                    <input class="full-width has-padding has-border" id="signup-username" type="text" placeholder="Username"
+                                    name='username'>
+
+                                 <p class="fieldset">
+                                    <label class="image-replace cd-password" for="signup-password">Password</label>
+                                    <input class="full-width has-padding has-border" id="signup-password" type="password"  placeholder="Password"
+                                    name="password">
+                                    <a href="#0" class="hide-password">Show</a>
+                                    <span>{{login_error}} </span>
+                                </p>
+                    
+                                <p class="fieldset">
+                                    <input type="checkbox" id="remember-me" checked>
+                                    <label for="remember-me">Remember me</label>
+                                </p>
+                    
+                                <p class="fieldset">
+                                    <input class="full-width" type="submit" value="Login">
+                                </p>
+                            </form>
+                            
+                            <p class="cd-form-bottom-message"><a href="#0">Forgot your password?</a></p>
+                            <!-- <a href="#0" class="cd-close-form">Close</a> -->
+                        </div> <!-- cd-login -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock main%}
+                        
+
+</body>
+
+
+    
+</body>
+</html>

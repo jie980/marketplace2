@@ -1,0 +1,47 @@
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block head%}
+    <!-- Title  -->
+    <title>paypal</title>
+    {% endblock head%}
+
+
+</head>
+
+<body>
+
+        {% block main%}
+        <!-- Header Area End -->
+        <div class="amado_product_area section-padding-100">
+            <div class="container-fluid mt-30">
+           
+            <h2>Pay by PayPal</h2>
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_xclick">
+                <input type="hidden" name="business" value="jin.gao@mail.mcgill.ca">
+                <input type="hidden" name="lc" value="CA">
+                <input type="hidden" name="item_name" value="Your Item">
+                <input type="hidden" name="amount" value="{{order.price}}">
+                <input type="hidden" name="currency_code" value="CAD">
+                <input type="hidden" name="button_subtype" value="services">
+                <input type="hidden" name="tax_rate" value="{% widthratio order.price 20 1 %}$">
+                <input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHostedGuest">
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif"  name="submit" alt="PayPal - The safer, easier way to pay online!">
+                <img alt=""  src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+            </form>
+            
+            <h3>You don't actually need to pay. The order is created now. And your order number is {{order.pk}}</h3>
+            <a href='{% url "orderhistory" %}'>click here! to see</a>
+            </div>
+        </div>
+
+        {% endblock main%}
+            
+
+
+
+</html>

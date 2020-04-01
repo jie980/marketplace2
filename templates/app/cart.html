@@ -1,0 +1,225 @@
+{% extends 'app/header.html' %} <!--继承模板-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Title  -->
+    {% block head%}
+    <title>Amado - Furniture Ecommerce Template | Cart</title>
+    <link rel="stylesheet" href="{% static 'css/myStyle.css' %}">
+
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <script type="text/javascript" src="{%static 'js/myCart.js' %}"></script>
+
+    {% endblock head%}
+        
+</head>
+
+<body>
+
+        {% block main%}
+        {% if user.is_authenticated %}
+        <div class="cart-table-area section-padding-100">
+            <div class="container-fluid mt-30">
+                <div class="row">
+                    <div class="col-12 col-mt-8">
+                        <!-- 购物车 -->
+                    <p></p>
+                    
+                    <h2>Shopping Cart</h2>
+                        <p>{{order}}</p>
+                        <div class="cart-table clearfix">               
+                        <section id="cart"> 
+                            
+                            {% for item,path in itemlist %}
+
+                            <article class="product">
+                                <header>
+                                    <h3 class="pid" style="display: none">{{item.pk}}</h3>
+                                    <span class="remove">
+                                        {% if path != ''%}
+                                        <img src="/static/upfile/{{path}}" alt="">
+                
+                                        <h3>Remove</h3>
+                                        {% else %}
+                                        <img src="{% static 'img/product-preview.png' %}" alt="">
+                                        <h3>Remove</h3>
+                                        {% endif %}
+                                    </span>
+
+                                </header>
+                                
+                                <div class="content">
+                
+                                    <h1>{{item.product.pName}}</h1>
+                                    
+                                </div>
+                
+                                <footer class="content" >
+                                    
+                                    <span class="qt-minus">-</span>
+                                    <span class="qt">{{item.quantity}}</span>
+                                    <span class="qt-plus">+</span>
+                                    <h2 class="full-price">
+
+                                        {% widthratio item.price 1 item.quantity %}$
+                                    </h2>
+                        
+                                    <h2 class="price">
+
+                                        {{item.price}}$
+                                    </h2>
+                                    <h3 class="pid" style="display: none">{{item.pk}}</h3>
+                                </footer>
+                            </article>
+                            {% empty %}
+                            <h2> Your shopping cart is empty.</h2>
+                            <h2> Let's shop something!</h2>
+               
+                            {% endfor %}
+
+                        </section>
+                        </div>
+                    </div>
+                    <!-- 计算 -->
+                   
+                    <div class="container clearfix">
+
+                        <div class="left">
+                            <h5 class="subtotal">Subtotal: <span>0</span>$</h2>
+                            <h6 class="tax">Taxes (5%): <span>0</span>$</h3>
+                            <h6 class="shipping">Shipping: <span>0.00</span>$</h3>
+                        </div>
+            
+                        <div class="right">
+                            <h4 class="total">&nbsp &nbsp &nbsp Total: <span>0</span>$</h1>
+                            <a  class="btn" style="color:white;font-size:20px;font-weight: 100;" href='#check'>Checkout</a>
+
+
+                        </div>
+            
+                    </div> 
+
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="col-12 col-lg-8">
+                        <div class="checkout_details_area mt-50 clearfix">
+
+                            <div class="cart-title">
+                                <h2 id="check">Checkout</h2>
+                            </div>
+
+                            <form action="{% url 'checkout'%}" method="POST">
+                            {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <input type="text" class="form-control" id="first_name" value="" placeholder="First Name" 
+                                        name="firstname" required>
+                                        <span>{{ form.firstname.errors }}</span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <input type="text" class="form-control" id="last_name" value="" placeholder="Last Name" 
+                                        name="lastname" required="">
+                                        <span>{{ form.lastname.errors }}</span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <input type="text" class="form-control" id="company" placeholder="Company Name" value=""
+                                        name="companyname">
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <select class="w-100" id="country" name="country" required="">
+                                        <option value="usa">United States</option>
+                                        <option value="uk">United Kingdom</option>
+                                        <option value="ger">Germany</option>
+                                        <option value="fra">France</option>
+                                        <option value="ind">India</option>
+                                        <option value="aus">Australia</option>
+                                        <option value="bra">Brazil</option>
+                                        <option value="cana">Canada</option>
+                                        <option value="chn">China</option>
+                                        </select>
+                                        <span>{{ form.country.errors }}</span>
+
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <input type="text" class="form-control mb-3" id="street_address" placeholder="Address" value="" name="address" required>
+                                        <span>{{ form.address.errors }}</span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <input type="text" class="form-control" id="city" placeholder="City" value="" name="city" required>
+                                        <span>{{ form.city.errors }}</span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <input type="text" class="form-control" id="zipCode" placeholder="Zip Code" value="" 
+                                        name="zipcode" required>
+                                        <span>{{ form.zipcode.errors }}</span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <input type="number" class="form-control" id="phone_number" min="0" placeholder="Phone No" value="" name="phone" required="">
+                                        <span>{{ form.phone.errors }}</span>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <textarea name="comment" class="form-control w-100" id="comment" cols="30" rows="10" placeholder="Leave a comment about your order"></textarea>
+                                    </div>
+                                    
+
+                           
+                                    <div class="col-md-6 mb-3">
+                                        
+                                        <input type='text' class="price" name ="price" value="1" readonly >
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                           <div class="cart-summary">
+                            <h5>Cart Total</h5>
+                            <ul class="summary-table">
+                                <li class="subtotal">Subtotal: <span>163.96</span>$</li>
+                                <li class="tax">Taxes (5%):<span>8.2</span>$</li>
+                                <li class="shipping">Shipping: <span>0.00</span>$</li>
+                                <li class="total">Total: <span>0</span>$</li>
+                            </ul>
+
+                            <div class="payment-method">
+                                <!-- Cash on delivery -->
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input type='radio' class="custom-control-input" name ="paymethod" id="cod" value ="cash on delivery" checked>
+                                    <label class="custom-control-label" for="cod">Cash on Delivery</label>
+                                </div>
+                                <!-- Paypal -->
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input type='radio' class="custom-control-input" name ="paymethod" id="paypal" value="paypal">
+                                    <label class="custom-control-label" for="paypal">Paypal <img class="ml-15" src="{% static 'img/core-img/paypal.png' %}" alt=""></label>
+                                </div>
+
+                            </div>  
+                                                         
+                            <input  type='submit' class="btn" style="color:white;font-size:20px;font-weight: 100;" value='checkout'>
+                            </form>
+                       
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="cart-table-area section-padding-100">
+            <div class="container-fluid mt-30">
+                <div class="cart-title">
+                   <h2>Please <a href="{% url 'login' %}">login</a> or <a href="{% url 'register' %}">sign up</a>.</h2>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% endblock main%}
+
+</body>
+
+</html>
