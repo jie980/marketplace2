@@ -1,8 +1,10 @@
+from __future__ import unicode_literals
+from django.contrib.auth import get_user_model
 from django.db import models
-from django.contrib.auth.models import User
-from django.utils import timezone
 
-# Create your models here.
+User = get_user_model()
+
+
 class Product(models.Model):
     pName = models.CharField(max_length=20)
     pDescription = models.CharField(max_length=1000)
@@ -36,45 +38,11 @@ class CartItem(models.Model):
     orderid = models.ForeignKey(Order, on_delete=models.CASCADE)
 
 
-# class Meta:
-# unique_together = (('buyer', 'product', 'isDelete'),)
-
-
-# class Cart(object):
-
-#     def __init__(self, *args, **kwargs):
-#     	self.items = []
-#     	self.total_price = 0
-#     def add_product(self,product):
-#     	self.total_price += product.pPrice
-#     	for item in self.items:
-#     		if item.product.id == product.id:
-#     			item.quantity += 1
-#     	return self.items.append(CartItem(product=product,unit_price=product.price,quantity=1))
-
-#      jane- model for storage of chat history
-
-
 class Room(models.Model):
-    name = models.TextField()
-    label = models.SlugField(unique=True)
 
-    def __unicode__(self):
-        return self.label
+    userOne = models.CharField(max_length=30, null=True)
+    userTwo = models.CharField(max_length=30, null=True)
+    content = models.TextField(blank=True)
 
-
-class Message(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    handle = models.TextField()
-    message = models.TextField()
-    timestamp = models.DateTimeField(default=timezone.now, db_index=True)
-
-    def __unicode__(self):
-        return '[{timestamp}] {handle}: {message}'.format(**self.as_dict())
-
-    @property
-    def formatted_timestamp(self):
-        return self.timestamp.strftime('%b %-d %-I:%M %p')
-
-    def as_dict(self):
-        return {'handle': self.handle, 'message': self.message, 'timestamp': self.formatted_timestamp}
+    def __str__(self):
+        return self.userTwo

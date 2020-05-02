@@ -1,5 +1,4 @@
-<!--继承模板-->
-{% extends 'app/header.html' %} <!--继承模板-->
+{% extends 'app/header.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -10,16 +9,13 @@
     <link rel="stylesheet" href="{% static 'css/myStyle.css' %}">
     {% endblock head%}
 
-
-    
-   105行开始是内容
 </head>
 
 <body>
 
 
         
-    <!--侧边栏-->
+    <!--side box-->
         {% block main %}
         <div class="shop_sidebar_area">
             <div class="sidebar_text">
@@ -49,9 +45,7 @@
         <div class="amado_product_area section-padding-100">
             {% if user.is_authenticated %}
             <div class="container-fluid mt-30">
-                
-                <!-- 检测到登陆之后显示welcome -->
-                <!-- 不然显示登陆界面链接 -->
+
                  <div class="cart-title">
                    
                     <h2>Order History</h2>
@@ -61,7 +55,10 @@
                     <table class="table table-responsive">
                         <thead>
                             <tr>
-                                <th>Order Number:{{order.pk}}</th>
+                                <th>Order Number:
+                                    <span style="color:#fbb710">&nbsp{{order.pk}}
+                                    </span>
+                                </th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -71,11 +68,9 @@
                         <tbody>
                             {% for item in itemlist %}
                             <tr>
-                                <td class="orderimg">
-                                    <a href="#"></a>
-                                </td>
+
                                 <td class="cart_product_desc">
-                                    <h5>{{item.product.pName}}</h5>
+                                    <a style="font-size:20px" href="/app/shop/{{item.product.pk}}">{{item.product.pName}} </a>
                                 </td>
                                 <td class="price">
                                     <span style="color:#fbb710">${{item.price}}</span>
@@ -92,7 +87,8 @@
 
                         </tbody>
                         <tr>
-                            <th style="color:#fbb710">Total:{{order.price}}</th>
+                            <th>Total:<p style="color:#fbb710">{{order.price}}</p></th>
+                            <th>Pay Method:<p style="color:#fbb710">{{order.pay}}</p></th>
                         </tr>
                     </table>
                     {% endfor %}
@@ -104,9 +100,7 @@
 
             {% else %}
             <div class="container-fluid mt-30">
-                
-                <!-- 检测到登陆之后显示welcome -->
-                <!-- 不然显示登陆界面链接 -->
+
                 <div class="cart-title">
                    
                     <h2>Order History</h2>

@@ -1,3 +1,5 @@
+{% extends 'app/header.html' %}
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,25 +8,44 @@
 </head>
 <body>
 <div>
-    <a href="{% url 'index' %}">Home</a>
-<!---->
-    </div>
+    {% block main%}
+    <div class="cart-table-area section-padding-100">
+        <div class="container-fluid mt-30">
+            
+            <div class="row">
+                <div class="col-12 col-mt-8">
+                    <h2>Chat Room</h2>
 
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
-    <input id="chat-message-input" type="text" size="100"/><br/>
-    <input id="chat-message-submit" type="button" value="Send"/>
-</body>
+                    <div class="checkout_details_area mt-30 clearfix">
+                        <form>
+                        
+                        <div class="row">
+                           
+                            <br/>
+                            <div class="col-md-6 mb-3">
+                                <textarea id="chat-log" class="form-control w-100" cols="30" rows="20"></textarea><br/>
+                                <input class="form-control" id="chat-message-input" type="text" size="100"/><br/>
+                                <input class="btn amado-btn w-100" id="chat-message-submit" type="button" value="Send"/>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/reconnecting-websocket.js' %}"></script>
 <script>
     var roomName = "{{ room_name }}";
-
-    var chatSocket = new WebSocket(
+    var chatSocket = new ReconnectingWebSocket(
         'ws://' + window.location.host +
-        '/ws/chat/' + roomName + '/');
+        '/ws/app/' + roomName + '/');
 
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
         var message = data['message'];
-        document.getElementById('chat-log').value += (message + '\n');
+        document.getElementById('chat-log').value += (message);
     };
 
     chatSocket.onclose = function(e) {
@@ -33,10 +54,11 @@
 
     document.getElementById('chat-message-input').focus();
     document.getElementById('chat-message-input').onkeyup = function(e) {
-        if (e.keyCode === 13) {  // enter, return
+        if (e.keyCode === 13) {
             document.getElementById('chat-message-submit').click();
         }
     };
+
 
     document.getElementById('chat-message-submit').onclick = function(e) {
         var messageInputDom = document.getElementById('chat-message-input');
@@ -48,4 +70,8 @@
         messageInputDom.value = '';
     };
 </script>
+
+</body>
+
 </html>
+    {% endblock main%}

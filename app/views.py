@@ -1,24 +1,24 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, transaction
+from django.views import View
 from . import forms
+from .forms import registerForm
 from .models import Product, CartItem, Order, Room
 from django.contrib import auth
 import os
 from django.conf import settings
 from django.http import JsonResponse
-import haikunator
-import random
-import string
+
 
 # Create your views here.
 def register(request):
     content = {}
-    # 获取session里的name
+    # get name from session
     username = request.session.get('name', 'guest')
     content["username"] = username
     return render(request, "app/register.html", content)
@@ -27,28 +27,36 @@ def register(request):
 def registered(request):
     content = {}
     # create a signup form
-    form = forms.registerForm(request.POST)
+    form = registerForm(request.POST)
     content['form'] = form
-    # 获取session里的name
+    # get name from session
     username = request.session.get('name', 'guest')
     content["username"] = username
-    if form.is_valid():
+    captcha = request.POST.get('captcha').lower()
+    # verify the captcha first
+    if captcha != request.session.get('captcha'):
+        content['captcha_error'] = 'Wrong verification code'
+        username = request.session.get('name', 'guest')
+        content["username"] = username
+        return render(request, 'app/register.html', content)
+    # when form is valid and captcha is correct
+    elif form.is_valid() and captcha == request.session.get('captcha'):
         try:
             # try to create a new user
             user = User.objects.create_user(
-                form.cleaned_data['username'],
+                username=form.cleaned_data['username'],
                 email=form.cleaned_data['email'],
                 password=form.cleaned_data['password'])
-            # 转到主页稍后修改
+            # redirect to main page
             content['notice'] = "You created account! Let's login!"
             return render(request, "app/login.html", content)
-        # 重名错误
+        # name error
         except IntegrityError:
             form.add_error('username', 'Username is taken')
-            # 重新注册
+            # register again
             return render(request, 'app/register.html', content)
     else:
-        # form不完整
+        # form incomplete
         return render(request, 'app/register.html', content)
 
 
@@ -62,37 +70,51 @@ def login(request):
 def logined(request):
     content = {}
     if request.method == 'POST':
-        # 直接获取
         username = request.POST.get('username')
         password = request.POST.get('password')
-        # 用户认证
-        user = auth.authenticate(username=username, password=password)
-        # 数据库里有记录
-        if user is not None:
-            request.session['name'] = username  # 用session来储存username
-            auth.login(request, user)  # 登陆成功
+        captcha = request.POST.get('captcha').lower()
+        # when there is no input
+        if username == '' or password == '':
+            content['login_error'] = 'Username and password cannot be empty'
+            sername = request.session.get('name', 'guest')
             content["username"] = username
-            # 切换到主页
-            return HttpResponseRedirect('/app', content)
-        # 数据库里无记录
+
+            return render(request, "app/login.html", content)  # register fail
         else:
-            content['login_error'] = 'Wrong username or password'
-            username = request.session.get('name', 'guest')
-            content["username"] = username
-            return render(request, "app/login.html", content)  # 注册失败
+            user = auth.authenticate(username=username, password=password)
+            # there is record in database,and captcha is correct
+            if user is not None and captcha == request.session.get('captcha'):
+                request.session['name'] = username  # use session to store username
+                auth.login(request, user)  # successfully logged in
+                content["username"] = username
+                # redirect to the main page
+                return HttpResponseRedirect('/app', content)
+            # when captcha is not correct, reload the page
+            elif captcha != request.session.get('captcha'):
+                content['captcha_error'] = 'Wrong verification code'
+                username = request.session.get('name', 'guest')
+                content["username"] = username
+                return render(request, "app/login.html", content)
+            # when there isn't record in database
+            else:
+                content['login_error'] = 'Wrong username or password'
+                username = request.session.get('name', 'guest')
+                content["username"] = username
+
+                return render(request, "app/login.html", content)  # register fail
     return render(request, 'app/login.html')
 
 
 def logout(request):
-    # 清除session
+    # clear session
     # request.session.clear()
-    request.session.flush()  # 删除当前会话和当前session
+    request.session.flush()  # delete session
     return HttpResponseRedirect('/app')
 
 
 def index(request):
     content = {}
-    # 获取session里的name
+    # get name from session
     username = request.session.get('name', 'guest')
     content["username"] = username
     return render(request, "app/index.html", content)
@@ -100,7 +122,7 @@ def index(request):
 
 def sell(request):
     content = {}
-    # 获取session里的name
+    # get name from session
     username = request.session.get('name', 'guest')
     content["username"] = username
     return render(request, 'app/sell.html', content)
@@ -108,36 +130,30 @@ def sell(request):
 
 def posted(request):
     content = {}
-    # aProduct = Product()
-    # aProduct.pName='soccer'
-    # aProduct.pDescription = 'nice football'
-    # aProduct.pPrice = 12
-    # aProduct.pInventory=3
-    # aProduct.save()
-    # 填写上传form
+    # fill in and upload form
     form = forms.sellForm(request.POST, request.FILES)
     if form.is_valid():
-        # 创建一个数据库object
+        # create an object in table
         aProduct = Product()
         aProduct.pName = form.cleaned_data['pName']
         aProduct.pDescription = form.cleaned_data['pDescription']
         # aPic = form.cleaned_data['pPicture']
         aProduct.pPrice = form.cleaned_data['pPrice']
         aProduct.pInventory = form.cleaned_data['pInventory']
-        # 读取图片，没图片就是None
+        # load pic, if no pic, then None
         aPic = request.FILES.get("aPicture", None)
         if aPic != None:
-            # 上传图片地址到数据库
+            # upload pic to database
             filepath = os.path.join(settings.MEDIA_ROOT, aPic.name)
             aProduct.pPicture = filepath
             with open(filepath, 'wb') as fp:
-                for info in aPic.chunks():  # 分段上传
+                for info in aPic.chunks():  # upload in chunks
                     fp.write(info)
         aProduct.pOwner = request.user
         aProduct.save()
         content['posted'] = "posted success"
         return HttpResponseRedirect('/app/myaccount/myproducts')
-    # 表单不完整
+    # form incomplete
     content['form'] = form
     username = request.session.get('name', 'guest')
     content['username'] = username
@@ -146,7 +162,7 @@ def posted(request):
 
 def myaccount(request):
     content = {}
-    # 获取session里的name
+    # get name from session
     username = request.session.get('name', 'guest')
     content["username"] = username
     return render(request, 'app/myaccount.html', content)
@@ -154,7 +170,7 @@ def myaccount(request):
 
 def myproducts(request):
     content = {}
-    # 获取session里的name
+    # get name from session
     username = request.session.get('name', 'guest')
     content["username"] = username
     if request.user.is_authenticated:
@@ -175,13 +191,13 @@ def myproducts(request):
 
 def edit(request, pid):
     content = {}
-    # 获取当前物品
+    # get the item
     product = Product.objects.get(pk=pid);
-    # 获取session里的name
+    # get name from session
     username = request.session.get('name', 'guest')
     content["username"] = username
     content["product"] = product
-    # 保存当前物品的id
+    # store the id of the current item
     request.session['pid'] = product.pk
     print(request.session.get('pid'))
     return render(request, 'app/edit.html', content)
@@ -198,14 +214,14 @@ def edited(request):
         # aPic = form.cleaned_data['pPicture']
         aProduct.pPrice = form.cleaned_data['pPrice']
         aProduct.pInventory = form.cleaned_data['pInventory']
-        # 读取图片，没图片就是None
+        # load pic, if no pic, None
         aPic = request.FILES.get("pPicture", None)
         if aPic != None:
-            # 上传图片地址到数据库
+            # upload pic to database
             filepath = os.path.join(settings.MEDIA_ROOT, aPic.name)
             aProduct.pPicture = filepath
             with open(filepath, 'wb') as fp:
-                for info in aPic.chunks():  # 分段上传
+                for info in aPic.chunks():  # upload in chunks
                     fp.write(info)
         aProduct.pOwner = request.user
         aProduct.save()
@@ -227,7 +243,7 @@ def deleted(request, pid):
 
 def shop(request):
     content = {}
-    # 获取session里的name
+    # get name from session
     username = request.session.get('name', 'guest')
     content["username"] = username
 
@@ -258,7 +274,7 @@ def productdetail(request, pid):
     return render(request, 'app/productDetails.html', content)
 
 
-iddict = {}  # global variable used for all cart and checkout method
+# iddict = {}  # global variable used for storing all cartitem
 
 
 def cart(request):
@@ -298,22 +314,20 @@ def cart(request):
 
     # if user check his/her cart, show all of them
     if request.user.is_authenticated:
-        # 修改了
         itemlist = request.user.cartitem_set.all().filter(isDelete=False)
-
         pathlist = []
         for item in itemlist:
             paths = item.product.pPicture.name
             path = paths.split('/')[-1]
             pathlist.append(path)
-            iddict[item.product.pk] = item.quantity
+            # iddict[item.product.pk] = item.quantity
         ziplist = zip(itemlist, pathlist)
         # request.session['itemlist'] = ziplist
 
         print(ziplist)
         content['itemlist'] = ziplist
-        content['iddict'] = iddict
-        print(iddict)
+        # content['iddict'] = iddict
+        # print(iddict)
     return render(request, 'app/cart.html', content)
 
 
@@ -324,10 +338,10 @@ def deletecart(request):
     cartItem = CartItem.objects.get(pk=pid)
     productid = cartItem.product.pk
     print(productid)
-    del iddict[productid]
+    # del iddict[productid]
     cartItem.delete()
 
-    print(iddict)
+    # print(iddict)
     data = {}
     data['pid'] = pid
 
@@ -344,8 +358,8 @@ def editcart(request):
         cartItem.quantity = cartItem.quantity + 1
         cartItem.save()
         productid = cartItem.product.pk
-        iddict[productid] = iddict[productid] + 1
-        print(iddict)
+        # iddict[productid] = iddict[productid] + 1
+        # print(iddict)
         data = {}
         data['pid'] = pid
         return JsonResponse(data)
@@ -365,8 +379,8 @@ def editcart2(request):
         cartItem.save()
 
         productid = cartItem.product.pk
-        iddict[productid] = iddict[productid] - 1
-        print(iddict)
+        # iddict[productid] = iddict[productid] - 1
+        # print(iddict)
         data = {}
         data['pid'] = pid
         return JsonResponse(data)
@@ -380,8 +394,7 @@ def checkout(request):
     content = {}
     form = forms.checkoutForm(request.POST)
     # request.session['form'] = form
-    # 获取session里的name
-
+    # get name from session
     username = request.session.get('name', 'guest')
     content["username"] = username
     if form.is_valid():
@@ -401,21 +414,18 @@ def checkout(request):
         aOrder.owner = request.user
         aOrder.save()
 
-        # #change the inventory
-        for pid, amt in iddict.items():
-            product = Product.objects.get(pk=pid)
-
-            product.pInventory = product.pInventory - amt
-            product.save()
-        # remove everything from the his/her cart and also the cart in the database
-        # add item into the order
-        itemlist = request.user.cartitem_set.all()
+        itemlist = request.user.cartitem_set.all().filter(isDelete=False)
         print(itemlist)
         for item in itemlist:
             print(item.isDelete)
-
+            # change the inventory
+            product = item.product
+            product.pInventory = product.pInventory - item.quantity
+            product.save()
+            # remove everything from the his/her cart and also the cart in the database
             if item.isDelete == False:
                 item.isDelete = True
+                # add item into the order
                 item.orderid = aOrder
                 item.save()
 
@@ -426,7 +436,7 @@ def checkout(request):
             return render(request, "app/cod.html", content)
 
     else:
-        # form不完整
+        # form incomplete
         content['order'] = "Order fail! Please refresh to see your item"
         content['form'] = form
         return render(request, "app/cart.html", content)
@@ -451,38 +461,63 @@ def orderhistory(request):
 
     return render(request, "app/orderHistory.html", content)
 
-# def new_room(request):
-#     """
-#     Randomly create a new room, and redirect to it.
-#     """
-#     new_room = None
-#     while not new_room:
-#         with transaction.atomic():
-#             label = haikunator.haikunate()
-#             # if Room.objects.filter(label=label).exists():
-#             #     continue
-#             #new_room = Room.objects.create(label=label)
-#     return redirect(chat_room, label=label)
-#
-# def chat_room(request, label):
-#     """
-#     Room view - show the room, with latest messages.
-#
-#     The template for this view has the WebSocket business to send and stream
-#     messages, so see the template for where the magic happens.
-#     """
-#     # If the room with the given label doesn't exist, automatically create it
-#     # upon first visit (a la etherpad).
-#     room, created = Room.objects.get_or_create(label=label)
-#
-#     # We want to show the last 50 messages, ordered most-recent-last
-#     messages = reversed(room.messages.order_by('-timestamp')[:50])
-#
-#     return render(request, "app/room.html", {
-#         'room': room,
-#         'messages': messages,
-#     })
+
+def chat_index(request):
+    return render(request, 'app/chat_index.html', {})
+
+
 def room(request, room_name=None):
     return render(request, 'app/room.html', {
-        'room_name': room_name
+        'room_name': room_name,
+
     })
+
+
+# verification code generator
+def captcha(request):
+    from PIL import Image, ImageDraw, ImageFont
+    import random
+
+    bgcolor = (random.randrange(20, 100), random.randrange(20, 100), random.randrange(20, 100))
+
+    size = (100, 50)
+    # create a new canvas
+    aImage = Image.new("RGB", size, bgcolor)
+    # create a new pen
+    aPen = ImageDraw.Draw(aImage)
+    # candidate for the captcha
+    str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    selectedstr = ''
+    for i in range(0, 4):
+        selectedstr += str[random.randrange(0, len(str))]
+    print(selectedstr)
+
+    font = ImageFont.truetype("static/fonts/helveticaneue_medium-webfont.ttf", 30)
+
+    ftcolor = (225, random.randrange(0, 255), random.randrange(0, 255))
+
+    aPen.text((5, random.randrange(3, 7)), selectedstr[0], font=font, fill=ftcolor)
+    aPen.text((30, random.randrange(3, 7)), selectedstr[1], font=font, fill=ftcolor)
+    aPen.text((55, random.randrange(3, 7)), selectedstr[2], font=font, fill=ftcolor)
+    aPen.text((75, random.randrange(3, 7)), selectedstr[3], font=font, fill=ftcolor)
+
+    # make two horizon lines in the canvas
+    linefill = (random.randrange(0, 255), random.randrange(0, 255), 255)
+    aPen.line((0, random.randrange(10, 40), 100, random.randrange(10, 40)), fill=linefill, width=2)
+    linefill2 = (random.randrange(0, 255), random.randrange(0, 255), 255)
+    aPen.line((0, random.randrange(10, 40), 100, random.randrange(10, 40)), fill=linefill2, width=2)
+    # make 200 pts in the canvas
+    for i in range(0, 200):
+        # xy is the postion to point
+        xy = (random.randrange(0, 100), random.randrange(0, 50))
+        # fill with ramdom color
+        fill = (random.randrange(0, 255), 255, random.randrange(0, 255))
+        aPen.point(xy, fill=fill)
+    del aPen
+    # use session to store the captcha
+    request.session['captcha'] = selectedstr.lower()
+    import io
+    buffer = io.BytesIO()
+    aImage.save(buffer, 'png')
+
+    return HttpResponse(buffer.getvalue(), 'image/png')

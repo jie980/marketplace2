@@ -1,4 +1,4 @@
-{% extends 'app/header.html' %} <!--继承模板-->
+{% extends 'app/header.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -6,12 +6,13 @@
 <head>
     <!-- Title  -->
     {% block head%}
-    <title>Amado - Furniture Ecommerce Template | Cart</title>
+    
     <link rel="stylesheet" href="{% static 'css/myStyle.css' %}">
 
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
     <script type="text/javascript" src="{%static 'js/myCart.js' %}"></script>
 
+                        
     {% endblock head%}
         
 </head>
@@ -24,7 +25,7 @@
             <div class="container-fluid mt-30">
                 <div class="row">
                     <div class="col-12 col-mt-8">
-                        <!-- 购物车 -->
+                        <!-- shopping cart -->
                     <p></p>
                     
                     <h2>Shopping Cart</h2>
@@ -53,6 +54,7 @@
                                 <div class="content">
                 
                                     <h1>{{item.product.pName}}</h1>
+                                    <p class="avaibility"><i class="fa fa-circle"></i> {{item.product.pInventory}} left in stock.</p>
                                     
                                 </div>
                 
@@ -65,11 +67,12 @@
 
                                         {% widthratio item.price 1 item.quantity %}$
                                     </h2>
-                        
+
                                     <h2 class="price">
 
                                         {{item.price}}$
                                     </h2>
+                                    <h3 class="stock" style="display: none">{{item.product.pInventory}}</h3>
                                     <h3 class="pid" style="display: none">{{item.pk}}</h3>
                                 </footer>
                             </article>
@@ -82,19 +85,19 @@
                         </section>
                         </div>
                     </div>
-                    <!-- 计算 -->
+                    <!-- calculate -->
                    
                     <div class="container clearfix">
 
                         <div class="left">
-                            <h5 class="subtotal">Subtotal: <span>0</span>$</h2>
-                            <h6 class="tax">Taxes (5%): <span>0</span>$</h3>
-                            <h6 class="shipping">Shipping: <span>0.00</span>$</h3>
+                            <h5 class="subtotal">Subtotal: <span>0</span>$</h5>
+                            <h6 class="tax">Taxes (5%): <span>0</span>$</h6>
+                            <h6 class="shipping">Shipping: <span>0.00</span>$</h6>
                         </div>
             
                         <div class="right">
-                            <h4 class="total">&nbsp &nbsp &nbsp Total: <span>0</span>$</h1>
-                            <a  class="btn" style="color:white;font-size:20px;font-weight: 100;" href='#check'>Checkout</a>
+                            <h4 class="total">&nbsp &nbsp &nbsp Total: <span>0</span>$</h4>
+                            <a href = "#check2" class="btn" style="color:white;font-size:20px;font-weight: 100;">Checkout</a>
 
 
                         </div>
@@ -110,7 +113,7 @@
                         <div class="checkout_details_area mt-50 clearfix">
 
                             <div class="cart-title">
-                                <h2 id="check">Checkout</h2>
+                                <h2 id="check2">Checkout</h2>
                             </div>
 
                             <form action="{% url 'checkout'%}" method="POST">
@@ -173,6 +176,7 @@
                                         <input type='text' class="price" name ="price" value="1" readonly >
                                     </div>
                                 </div>
+
                         </div>
                     </div>
                     <div class="col-12 col-lg-4">

@@ -1,5 +1,4 @@
-<!--继承模板-->
-{% extends 'app/header.html' %} <!--继承模板-->
+{% extends 'app/header.html' %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -19,7 +18,7 @@
 
 
         
-    <!--侧边栏-->
+    <!--side box-->
     {%block main%}
     <div class="shop_sidebar_area">
         <div class="sidebar_text">
@@ -29,7 +28,7 @@
             <!-- Widget Title -->
             <h6 class="widget-title mb-30">My Account</h6>
 
-            <!--  Catagories  -->
+            <!--  Categories  -->
             <div class="catagories-menu">
                 <ul>
                     <li><a href="{% url 'orderhistory'%}">Order History</a></li>
@@ -46,9 +45,6 @@
 
     <div class="amado_product_area section-padding-100">
         <div class="container-fluid mt-30">
-            
-            <!-- 检测到登陆之后显示welcome -->
-            <!-- 不然显示登陆界面链接 -->
             <div class="cart-title">
                <h2 >Upload Your Product</h2>
             </div>
@@ -90,7 +86,6 @@
         </div>
     </div>
     {%endblock main%}
-
 </body>
 
 </html>

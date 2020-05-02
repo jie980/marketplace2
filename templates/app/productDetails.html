@@ -1,4 +1,4 @@
-{% extends 'app/header.html' %} <!--继承模板-->
+{% extends 'app/header.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -6,7 +6,7 @@
 <head>
     <!-- Title  -->
     {% block head%}
-    <title>Amado - Furniture Ecommerce Template | Product Details</title>
+    
     {% endblock head%}
 
 </head>
@@ -137,20 +137,12 @@
                                 <a href = '{% url "login" %}' class="btn amado-btn">Login To Buy</a>
                                 {% endif %}
                             </form>
-                            <form action='{% url "room" %}'>
-                                    <input type="submit" name="chat" value="Chat with seller" class="btn amado-btn">
-                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-
-
-        <!-- Product Details Area End -->
+    <!-- Product Details Area End -->
     <!-- ##### Main Content Wrapper End ##### -->
 
     <!-- ##### Footer Area End ##### -->

@@ -1,4 +1,4 @@
-{% extends 'app/header.html' %} <!--继承模板-->
+{% extends 'app/header.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -6,8 +6,6 @@
     
     {% block head%}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amado - Furniture Ecommerce Template | Signup</title>
-
     <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 
     {% endblock head%}
@@ -60,7 +58,14 @@
                                     <span class="cd-error-message">
                                     {{ form.password_repeat.errors }}</span>
                                 </p>
+                                <p class="fieldset">
 
+                                    <input type="text" name="captcha" placeholder="Verify code">
+                                    <img src="{% url 'captcha' %}"><br/>
+                                    <span>
+                                    {{captcha_error}} </span>
+
+                                </p>
 
                     
                                 <p class="fieldset">
@@ -76,9 +81,5 @@
         </div>
     </div>
     {% endblock main%}
-                    
-
-
-    
 </body>
 </html>

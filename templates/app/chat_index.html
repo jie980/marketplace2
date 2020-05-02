@@ -1,26 +1,43 @@
+{% extends 'app/header.html' %}
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8"/>
     <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600,200' rel='stylesheet' type='text/css'>
 
-    <link rel="stylesheet" href='static/normalize.css' >
-    <link rel="stylesheet" href='static/skeleton.css' >
-    <link rel="stylesheet" href='static/chat.css' >
     <title>Chat Rooms</title>
 </head>
 
 <body>
-    <p>
-    <a href="{% url 'index' %}">Home</a>
-    <a href="{% url 'signup' %}">Signup</a>
-    <a href="{% url 'login' %}">Login</a>
-    <a href="{% url 'logout' %}">Logout</a>
-    </p>
+    {% block main%}
+    <div class="cart-table-area section-padding-100">
+        <div class="container-fluid mt-30">
+            
+            <div class="row">
+                <div class="col-12 col-mt-8">
+                    <h2>Live Chat</h2>
 
-    What chat room would you like to enter?<br/>
-    <input id="room-name-input" type="text" size="100"/><br/>
-    <input id="room-name-submit" type="button" value="Enter"/>
+                    <div class="checkout_details_area mt-30 clearfix">
+                        <form>
+                        
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <h4>&nbspWhich user would you like to contact?</h4>
+                                </br>
+                                <input class="form-control"  id="room-name-input" type="text" placeholder="Username">
+                                <br/>
+                                <input class="btn amado-btn w-100" id="room-name-submit" type="button" value="Enter"/>
+                            </div>
+
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.getElementById('room-name-input').focus();
@@ -32,8 +49,9 @@
 
         document.getElementById('room-name-submit').onclick = function(e) {
             var roomName = document.getElementById('room-name-input').value;
-            window.location.pathname = '/chat/' + roomName + '/';
+            window.location.pathname = '/app/' + roomName + '/';
         };
     </script>
+    {% endblock main%}
 </body>
 </html>

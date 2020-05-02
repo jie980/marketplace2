@@ -1,5 +1,4 @@
-<!--继承模板-->
-{% extends 'app/header.html' %} <!--继承模板-->
+{% extends 'app/header.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -7,14 +6,9 @@
 
     {% block head%}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amado - Furniture Ecommerce Template | Login</title>
-    
     <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 
-
-
     {% endblock head%}
-
 
 <body>
     {% block main%}
@@ -47,8 +41,11 @@
                                 </p>
                     
                                 <p class="fieldset">
-                                    <input type="checkbox" id="remember-me" checked>
-                                    <label for="remember-me">Remember me</label>
+
+                                    <input type="text" name="captcha" placeholder="Verify code">
+                                    <img src="{% url 'captcha' %}"><br/>
+                                    <span>{{captcha_error}} </span>
+
                                 </p>
                     
                                 <p class="fieldset">
@@ -68,8 +65,5 @@
                         
 
 </body>
-
-
-    
 </body>
 </html>

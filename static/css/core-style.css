@@ -22,6 +22,9 @@
   margin: 0;
   padding: 0; }
 
+.sidetext{
+  position:fixed;
+}
 
 body {
   font-family: "helveticaneuemedium";

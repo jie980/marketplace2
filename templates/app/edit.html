@@ -1,5 +1,4 @@
-<!--继承模板-->
-{% extends 'app/header.html' %} <!--继承模板-->
+{% extends 'app/header.html' %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -12,11 +11,10 @@
     {%endblock head%}
 
 </head>
-
 <body>
 
 
-    <!--侧边栏-->
+    <!--side box-->
     {%block main%}
     <div class="shop_sidebar_area">
         <div class="sidebar_text">
@@ -46,8 +44,8 @@
     <div class="amado_product_area section-padding-100">
         <div class="container-fluid mt-30">
             
-            <!-- 检测到登陆之后显示welcome -->
-            <!-- 不然显示登陆界面链接 -->
+            <!-- welcome when logged in -->
+            <!-- or show 'log in' -->
             <div class="cart-title">
                <h2 >Edit Your Product</h2>
             </div>

@@ -1,9 +1,7 @@
-from django.conf.urls import url
-from django.urls import path, re_path
+from django.urls import path
 import app.views
 
-
-#进行匹配view
+# URL config for dispatch
 urlpatterns = [
     path('register/',app.views.register,name='register'),
     path('registered/',app.views.registered),
@@ -26,5 +24,8 @@ urlpatterns = [
     path('cart/edit2/',app.views.editcart2,name='editcart2'),
     path('cart/delete/',app.views.deletecart),
     path('checkout/',app.views.checkout,name='checkout'),
-    path('room/',app.views.room,name='room'),
+    path('captcha/',app.views.captcha,name='captcha'),
+    path('room/',app.views.chat_index,name='chat_index'),
+    path('<str:room_name>/', app.views.room, name='room'),
+
 ]
